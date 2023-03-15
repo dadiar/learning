@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+	<title>PostX</title>
+</head>
+<body>
+	<h1>PostX</h1>
+	<label for="username">Username:</label>
+	<input type="text" id="username" name="username"><br><br>
+	<label for="room-code">Room Code:</label>
+	<input type="text" id="room-code" name="room-code">
+    <a href="/chat.html"><button class="join-button">Join</button></a>
+    <ul id="messages"></ul>
+
+<script>
+
+// select the form and messages container
+const form = document.querySelector('form');
+const messagesContainer = document.querySelector('.messages-container');
+
+// add an event listener to the form for when it is submitted
+form.addEventListener('submit', function(e) {
+    e.preventDefault(); // prevent the form from submitting
+
+    // select the username and room code input fields and get their values
+    const usernameInput = document.querySelector('#username-input');
+    const usernameText = usernameInput.value.trim(); // trim any whitespace from the value
+    const roomCodeInput = document.querySelector('#room-code-input');
+    const roomCodeText = roomCodeInput.value.trim(); // trim any whitespace from the value
+
+    // check if the username or room code input fields are empty
+    if (usernameText === '' || roomCodeText === '') {
+        // show an error message
+        const errorMessage = document.createElement('div');
+        errorMessage.classList.add('error-message');
+        errorMessage.textContent = 'Please fill in both your username and the room code.';
+        messagesContainer.appendChild(errorMessage);
+    } else {
+        // select the message input field and get its value
+        const messageInput = document.querySelector('#message-input');
+        const messageText = messageInput.value.trim(); // trim any whitespace from the value
+
+        // check if the message input field is not empty
+        if (messageText !== '') {
+            // create a new message object with the message text and the current date and time
+            const message = {
+                text: messageText,
+                date: new Date()
+            };
+
+            // clear the message input field
+            messageInput.value = '';
+
+            // add the message to the messages container using JSON
+            const messageJSON = JSON.stringify(message);
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'sent');
+            messageElement.innerHTML = '<p><span>You:</span> ' + messageText + '</p>';
+            messagesContainer.appendChild(messageElement);
+        }
+    }
+});
+
+</script>
+
+<h1 class="owner">By Dadiar</h1>
+
+<script src="/server.js"></script>
+
+</body>
+</html>

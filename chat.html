@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PostX - Messages</title>
+	<link rel="stylesheet" type="text/css" href="style1.css">
+</head>
+<body>
+	<header>
+		<h1>PostX</h1>
+	</header>
+	<main>
+		<h2>Messages</h2>
+		<div class="messages-container"></div>
+		<div class="message-input-container">
+			<form>
+				<input type="text" id="message-input" name="message-input" placeholder="Type your message here...">
+				<button type="submit" class="submit-button">Send</button>
+			</form>
+		</div>
+	</main>
+	<ul id="messages"></ul>
+	<script src="/js/script.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+const roomCode = new URLSearchParams(window.location.search).get('roomCode');
+const username = new URLSearchParams(window.location.search).get('username');
+
+// Join the room with the given room code and username
+socket.emit('join', { roomCode, username });
+
+// Handle form submit event
+const form = document.querySelector('form');
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const input = document.querySelector('input[type=text]');
+  const message = input.value.trim();
+
+  if (message) {
+    // Send the message to the server
+    socket.emit('message', { roomCode, username, message });
+
+    // Clear the input field
+    input.value = '';
+  }
+});
+
+// Add a new message to the chat
+function addMessage(message) {
+  const messagesList = document.querySelector('#messages');
+  const li = document.createElement('li');
+  li.textContent = message;
+  messagesList.appendChild(li);
+}
+
+function joinRoom() {
+  const roomCode = document.querySelector('#room-code-input').value;
+  const username = document.querySelector('#username-input').value; // Get the username input value
+  window.location.href = `chat.html?roomCode=${roomCode}&username=${username}`; // Pass the username in the query string
+}
+
+// Handle new message received from the server
+socket.on('message', message => {
+  addMessage(message);
+});
+</script>
+
+</body>
+</html>
